@@ -24,9 +24,9 @@ Descubra uma variedade de eventos perto de você e em todo o Brasil. De workshop
 
 Por enquanto, estou usando:
 
-* **Frontend:** [Nome da Tecnologia -  Angular, Tailwind]
-* **Backend:** [Nome da Tecnologia -  PHP, Laravel]
-* **Banco de Dados:** [Nome da Tecnologia - MySQL]
+* **Frontend:** [Angular, Tailwind]
+* **Backend:** [PHP, Laravel]
+* **Banco de Dados:** [MySQL]
 
 *(Esta seção pode ser atualizada à medida que o projeto avança!)*
 
