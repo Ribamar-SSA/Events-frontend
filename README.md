@@ -1,59 +1,48 @@
-# HdeventsFrontend
+# 🚀 Meu Projeto Incrível 
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
+Bem-vindo ao repositório do meu projeto! 🎉
 
-## Development server
+Este é o começo de algo que espero que seja muito legal. No momento, o projeto está nos seus **primeiros passos**, como um bebê dando as primeiras engatinhadas, mas a ideia principal já está no horizonte.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## 🎯 Objetivo Principal 
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Descubra uma variedade de eventos perto de você e em todo o Brasil. De workshops a shows, palestras a feiras, nossa plataforma conecta você às experiências que mais interessam.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚧 Status Atual
 
-```bash
-ng generate component component-name
-```
+* **Estrutura inicial:** O esqueleto do projeto está começando a ser montado.
+* **Primeiras linhas de código:** Algumas funcionalidades básicas já estão sendo rascunhadas.
+* **Muitas ideias na cabeça:** O backlog está cheio de coisas para implementar!
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 🛠️ Tecnologias Envolvidas 
 
-## Building
+Por enquanto, estou usando:
 
-To build the project run:
+* **Frontend:** [Nome da Tecnologia -  Angular, Tailwind]
+* **Backend:** [Nome da Tecnologia -  PHP, Laravel]
+* **Banco de Dados:** [Nome da Tecnologia - MySQL]
 
-```bash
-ng build
-```
+*(Esta seção pode ser atualizada à medida que o projeto avança!)*
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## Próximos Passos (Em Breve!)
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+1.  Definir melhor as funcionalidades principais.
+2.  Estruturar o ambiente de desenvolvimento.
+3.  Começar a codar as primeiras funcionalidades de verdade!
 
-```bash
-ng test
-```
+---
 
-## Running end-to-end tests
+## Contato
 
-For end-to-end (e2e) testing, run:
+Tem alguma dúvida, sugestão ou só quer bater um papo sobre o projeto? Sinta-se à vontade para entrar em contato!
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* **Email:** [ribamar.cssa@gmail.com]
+* **LinkedIn:** [linkedin.com/in/jose-ribamar-081ba5290]

@@ -1,0 +1,33 @@
+<div class="container mx-auto mt-8 p-4 bg-white shadow-lg rounded-lg">
+
+
+  <p *ngIf="error()" class="text-red-600 text-center font-semibold mb-4">
+    {{ error() }}
+  </p>
+
+  @if (events().length > 0) {
+  <h2 class="text-2xl font-bold text-gray-700 mt-8 mb-4">Seus Eventos</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    @for (event of events(); track event.id) {
+    <app-event-item [appEvent]="event"></app-event-item>
+    }
+  </div>
+
+  <div class="mt-8 flex justify-center space-x-2">
+    <button (click)="goToPreviousPage()" [disabled]="currentPage() === 1"
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+      &laquo; Anterior
+    </button>
+
+    <button (click)="goToNextPage()" [disabled]="currentPage() === lastPage()"
+      class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
+      Próxima &raquo;
+    </button>
+  </div>
+
+  } @else if (events().length === 0 && !error()) {
+  <p class="mt-8 text-gray-600 text-center">Nenhum evento encontrado.</p>
+  }
+
+</div>
