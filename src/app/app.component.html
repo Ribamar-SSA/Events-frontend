@@ -3,14 +3,12 @@
     <a routerLink="/" class="text-xl font-bold">HD Eventos</a>
     <ul class="flex space-x-4">
       <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
-      <li><a routerLink="/login" class="hover:text-blue-400" *ngIf="!authService.isAuthenticated()">Login</a></li>
-      <li><a routerLink="/register" class="hover:text-blue-400" *ngIf="!authService.isAuthenticated()">Cadastro</a></li>
-      <li *ngIf="authService.isAuthenticated()">
+      <li><a routerLink="/login" class="hover:text-blue-400" >Login</a></li>
+      <li><a routerLink="/register" class="hover:text-blue-400" >Cadastro</a></li>
+      <li >
         <a routerLink="/dashboard" class="hover:text-blue-400">Dashboard</a>
       </li>
-      <li *ngIf="authService.isAuthenticated()">
-        <button (click)="logout()" class="hover:text-blue-400 focus:outline-none">Sair</button>
-      </li>
+
     </ul>
   </nav>
 </header>

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { EventListComponent } from './event-list/event-list.component';
-import { AuthService } from './auth.service';
 import { CommonModule } from '@angular/common';
+import { AuthService } from './auth/auth.service';
 
 
 @Component({
@@ -20,14 +20,14 @@ export class AppComponent {
 
   title = 'hdevents-frontend';
 
-  logout(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-      },
-      error: (err) => {
-        console.error('Erro ao tentar sair:', err);
-      }
-    });
+  // logout(): void {
+  //   this.authService.logout().subscribe({
+  //     next: () => {
+  //     },
+  //     error: (err: any) => {
+  //       console.error('Erro ao tentar sair:', err);
+  //     }
+  //   });
 
-  }
+  // }
 }

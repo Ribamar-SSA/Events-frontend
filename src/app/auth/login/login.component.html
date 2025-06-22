@@ -1,0 +1,22 @@
+<div>
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="email">Email:</label>
+      <input id="email" type="email" formControlName="email">
+      <div *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+        Email inválido ou obrigatório.
+      </div>
+    </div>
+    <div>
+      <label for="password">Senha:</label>
+      <input id="password" type="password" formControlName="password">
+      <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        Senha é obrigatória.
+      </div>
+    </div>
+    <button type="submit" [disabled]="!loginForm.valid">Entrar</button>
+    <div *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</div>
+  </form>
+  <p>Não tem uma conta? <a routerLink="/register">Registre-se aqui</a></p>
+</div>
