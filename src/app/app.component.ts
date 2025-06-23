@@ -20,14 +20,5 @@ export class AppComponent {
 
   title = 'hdevents-frontend';
 
-  // logout(): void {
-  //   this.authService.logout().subscribe({
-  //     next: () => {
-  //     },
-  //     error: (err: any) => {
-  //       console.error('Erro ao tentar sair:', err);
-  //     }
-  //   });
-
-  // }
+  
 }

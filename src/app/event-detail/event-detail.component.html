@@ -1,1 +1,28 @@
-<p>event-detail works!</p>
+<!-- src/app/event-detail/event-detail.component.html -->
+<div *ngIf="event" class="p-6 max-w-2xl mx-auto bg-white rounded-lg shadow-xl mt-8">
+  <h2 class="text-3xl font-bold text-gray-800 mb-4">{{ event.speaker }}</h2>
+  <div class="space-y-2 text-gray-700">
+    <p><strong>ID:</strong> {{ event.id }}</p>
+    <p><strong>Data:</strong> {{ event.event_date | date:'shortDate' }}</p>
+    <p><strong>Local:</strong> {{ event.location }}</p>
+    <p class="text-lg leading-relaxed">{{ event.description }}</p>
+  </div>
+  <button (click)="goBack()"
+    class="mt-6 px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+    Voltar para a Lista
+  </button>
+</div>
+
+<!-- Mensagens de estado e erro -->
+<div *ngIf="!event && !errorMessage" class="text-center p-6 text-gray-600 mt-8">
+  <p>Carregando detalhes do evento...</p>
+</div>
+
+<div *ngIf="errorMessage"
+  class="text-center p-6 bg-red-100 text-red-700 border border-red-400 rounded-lg shadow-md mt-8">
+  <p class="font-semibold text-lg">{{ errorMessage }}</p>
+  <button (click)="goBack()"
+    class="mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+    Voltar para a Lista
+  </button>
+</div>

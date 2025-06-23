@@ -5,6 +5,7 @@ import { throwError } from 'rxjs/internal/observable/throwError';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { EventItemComponent } from '../event-item/event-item.component';
 import { AppEvent, PaginatedEventResponse } from '../models/event.model';
+import { EventService } from '../events/event.service';
 
 
 @Component({
@@ -23,15 +24,11 @@ export class EventListComponent implements OnInit {
   paginationLinks = signal<{ url: string | null; label: string; active: boolean }[]>([]);
 
 
-
-  private apiUrl = 'http://localhost:8000/api/events';
-
-  constructor(private http: HttpClient) { }
+  constructor(private eventService: EventService) { }
 
 
 
   ngOnInit(): void {
-    //o signal permite usar como se fosse o método
     this.fetchEvents(this.currentPage());
   }
 
@@ -39,32 +36,22 @@ export class EventListComponent implements OnInit {
     this.message.set('Carregando eventos...');
     this.error.set(null);
 
-    let url = `${this.apiUrl}?page=${pageNumber}`;
-    if (searchTerm) {
-      url += `&search=${searchTerm}`;
-    }
-
-
-    this.http.get<PaginatedEventResponse>(url)
-      .pipe(
-        catchError(err => {
-          console.error('Erro na requisição da API:', err);
-          this.error.set(`Erro ao carregar eventos: ${err.message || err.statusText || 'Erro desconhecido'}`);
+    this.eventService.getEvents(pageNumber, searchTerm)
+      .subscribe({
+        next: response => {
+          this.events.set(response.data);
+          this.currentPage.set(response.current_page);
+          this.lastPage.set(response.last_page);
+          this.paginationLinks.set(response.links.filter(link =>
+            link.url !== null && link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;'
+          ));
+          this.message.set(`Dados carregados com sucesso! ${this.events().length} eventos nesta página (total: ${response.total}).`);
+        },
+        error: err => {
+          console.error('Erro no componente ao carregar eventos:', err);
+          this.error.set(`${err.message || 'Erro desconhecido'}`);
           this.message.set('Falha ao carregar dados.');
-          return throwError(() => new Error('Erro na API ao buscar eventos.'));
-        })
-      )
-      .subscribe(response => {
-        this.events.set(response.data);
-        this.currentPage.set(response.current_page);
-        this.lastPage.set(response.last_page);
-
-        this.paginationLinks.set(response.links.filter(link =>
-          link.url !== null && link.label !== '&laquo; Previous' && link.label !== 'Next &raquo;'
-        ));
-
-
-        this.message.set(`Dados carregados com sucesso! ${this.events().length} eventos nesta página (total: ${response.total}).`);
+        }
       });
 
   }

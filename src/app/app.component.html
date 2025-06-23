@@ -3,11 +3,17 @@
     <a routerLink="/" class="text-xl font-bold">HD Eventos</a>
     <ul class="flex space-x-4">
       <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
-      <li><a routerLink="/login" class="hover:text-blue-400" >Login</a></li>
-      <li><a routerLink="/register" class="hover:text-blue-400" >Cadastro</a></li>
-      <li >
-        <a routerLink="/dashboard" class="hover:text-blue-400">Dashboard</a>
-      </li>
+      
+
+      <ng-container *ngIf="authService.isLoggedIn() | async; else notLoggedIn">
+        <span>Bem-vindo, {{ (authService.getCurrentUser() | async)?.name }}</span>
+        <button (click)="authService.logout()">Sair</button>
+      </ng-container>
+
+      <ng-template #notLoggedIn>
+        <a routerLink="/login">Login</a>
+        <a routerLink="/register">Registrar</a>
+      </ng-template>
 
     </ul>
   </nav>
