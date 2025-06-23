@@ -11,22 +11,23 @@ export class AuthService {
 
   private apiUrl = 'http://localhost:8000/api';
   private tokenKey = 'jwt_token';
-  private loggedin = new BehaviorSubject<boolean>(this.hasToken());
-  private currentUserSubject: BehaviorSubject<any | null>;
   private jwtHelper: JwtHelperService;
+  private loggedIn: BehaviorSubject<boolean>;
+  private currentUserSubject: BehaviorSubject<any | null>;
+
 
   constructor(private http: HttpClient, private router: Router) {
 
-
+    this.jwtHelper = new JwtHelperService();
+    this.loggedIn = new BehaviorSubject<boolean>(this.hasToken());
     const token = this.getToken();
     const user = token ? this.decodeToken(token) : null;
     this.currentUserSubject = new BehaviorSubject<any | null>(user);
-    this.jwtHelper = new JwtHelperService();
   }
 
 
-  isLoggedIn(): Observable<boolean> {
-    return this.loggedin.asObservable();
+  isloggedIn(): Observable<boolean> {
+    return this.loggedIn.asObservable();
   }
 
   hasToken(): boolean {
@@ -50,12 +51,15 @@ export class AuthService {
     }
   }
 
-
   login(credentials: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
-        localStorage.setItem(this.tokenKey, response.access_token);
-        this.loggedin.next(true);
+        if (response && response.data && response.data.token) {
+          this.setSession(response.data.token);
+        } else {
+          console.error('Login: Token não encontrado na resposta da API.', response);
+          throw new Error('Token não recebido após o login.');
+        }
       }),
       catchError(error => {
         console.error('Login failed:', error);
@@ -64,12 +68,25 @@ export class AuthService {
     );
   }
 
+  private setSession(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+    this.loggedIn.next(true);
+    const user = (token && typeof token === 'string' && token.length > 0 && token.split('.').length === 3) ? this.decodeToken(token) : null;
+    this.currentUserSubject.next(user);
+  }
+
 
   register(userData: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/register`, userData).pipe(
       tap(response => {
-        localStorage.setItem(this.tokenKey, response.access_token);
-        this.loggedin.next(true);
+        if (response && response.data && response.data.token) {
+          this.setSession(response.data.token);
+        } else {
+          console.warn('Registro bem-sucedido, mas nenhum token foi retornado. O usuário precisará fazer login manualmente.', response);
+
+
+          this.router.navigate(['/login']);
+        }
       }),
       catchError(error => {
         console.error('Registration failed:', error);
@@ -79,10 +96,10 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey); // Remove o token
-    this.loggedin.next(false); // Atualiza o status de login
-    this.currentUserSubject.next(null); // Limpa as informações do usuário
-    this.router.navigate(['/login']); // Redireciona para a página de login
+    localStorage.removeItem(this.tokenKey);
+    this.loggedIn.next(false);
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
 
 

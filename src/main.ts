@@ -10,7 +10,6 @@ import { routes } from './app/app.routes';
 bootstrapApplication(AppComponent,{
   providers: [
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor])), // Registra o interceptor funcional aqui
-    // Outros providers...
+    provideHttpClient(withInterceptors([authInterceptor])), 
   ]
 }).catch(err => console.error(err));

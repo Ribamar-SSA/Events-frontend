@@ -3,9 +3,9 @@
     <a routerLink="/" class="text-xl font-bold">HD Eventos</a>
     <ul class="flex space-x-4">
       <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
-      
 
-      <ng-container *ngIf="authService.isLoggedIn() | async; else notLoggedIn">
+
+      <ng-container *ngIf="authService.isloggedIn() | async; else notLoggedIn">
         <span>Bem-vindo, {{ (authService.getCurrentUser() | async)?.name }}</span>
         <button (click)="authService.logout()">Sair</button>
       </ng-container>
