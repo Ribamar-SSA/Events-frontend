@@ -6,9 +6,9 @@
   </p>
 
   @if (events().length > 0) {
-  <h2 class="text-2xl font-bold text-gray-700 mt-8 mb-4">Seus Eventos</h2>
+  <h2 class="text-2xl font-bold text-gray-700 mt-8 mb-4 max-w-screen-lg mx-auto"> Eventos</h2>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-screen-lg mx-auto ">
     @for (event of events(); track event.id) {
     <app-event-item [appEvent]="event"></app-event-item>
     }

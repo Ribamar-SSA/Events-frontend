@@ -21,11 +21,11 @@
 
 
     <p class="text-gray-700 text-base leading-relaxed flex-grow">
-      {{ appEvent.description.substring(0, 100) }}...
+      <span class="font-medium">Descricação:</span> {{ appEvent.description.substring(0, 100) }}...
     </p>
 
     <div class="mt-4 text-sm font-semibold text-gray-500">
-      Data: {{ appEvent.event_date | date:'shortDate' }}
+      Data: {{ appEvent.event_date | date:'longDate' }}
     </div>
 
     <button [routerLink]="['/events', appEvent.id]"

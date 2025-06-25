@@ -1,20 +1,21 @@
 <header class="bg-gray-800 text-white p-4">
-  <nav class="container mx-auto flex justify-between items-center">
+  <nav class="container mx-auto flex justify-between items-center max-w-screen-lg">
     <a routerLink="/" class="text-xl font-bold">HD Eventos</a>
     <ul class="flex space-x-4">
-      <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
 
 
-      <ng-container *ngIf="authService.isloggedIn() | async; else notLoggedIn">
+
+
+       <ng-container *ngIf="authService.isloggedIn() | async; else notLoggedIn">
         <span>Bem-vindo, {{ (authService.getCurrentUser() | async)?.name }}</span>
-        <button (click)="authService.logout()">Sair</button>
+         <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
+        <button class="hover:text-blue-400" (click)="authService.logout() ">Sair</button>
       </ng-container>
 
       <ng-template #notLoggedIn>
         <a routerLink="/login">Login</a>
         <a routerLink="/register">Registrar</a>
       </ng-template>
-
     </ul>
   </nav>
 </header>

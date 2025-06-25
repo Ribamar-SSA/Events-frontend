@@ -26,6 +26,8 @@ export class AuthService {
   }
 
 
+
+
   isloggedIn(): Observable<boolean> {
     return this.loggedIn.asObservable();
   }
@@ -39,11 +41,13 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<any | null> {
+    console.log(this.currentUserSubject.asObservable())
     return this.currentUserSubject.asObservable();
   }
 
   private decodeToken(token: string): any | null {
     try {
+      console.log(this.jwtHelper.decodeToken(token));
       return this.jwtHelper.decodeToken(token);
     } catch (error) {
       console.error('Error decoding token:', error);
