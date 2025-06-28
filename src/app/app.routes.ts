@@ -9,19 +9,17 @@ import { RegisterComponent } from './auth/register/register.component';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', component: HomeComponent, title: 'Bem-vindo' }, // Página inicial
-  { path: 'events', component: EventListComponent, title: 'Eventos' }, // Lista de eventos
-  { path: 'events/:id', component: EventDetailComponent, title: 'Detalhes do Evento' }, // Ver detalhes
+  { path: '', component: HomeComponent, title: 'Bem-vindo' },
+  { path: 'events', component: EventListComponent, title: 'Eventos' },
+  { path: 'events/create', component: EventFormComponent, title: 'Criar Evento' },
+  { path: 'events/:id', component: EventDetailComponent, title: 'Detalhes do Evento' },
 
   // Rotas Protegidas (precisam de autenticação) - Adicionaremos Guards futuramente
-  { path: 'events/create', component: EventFormComponent, title: 'Criar Evento' },
   { path: 'events/:id/edit', component: EventFormComponent, title: 'Editar Evento' },
 
-  // Rota curinga para caminhos não encontrados (deve ser a última rota)
+
+
+
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: '**', redirectTo: '/login' } // Redireciona rotas inválidas
-
-
-
-
+  { path: '**', redirectTo: '/login' }
 ];

@@ -38,4 +38,7 @@ export class EventService {
     );
   }
 
+  createEvent(formData: FormData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/store`, formData, { withCredentials: true });
+  }
 }

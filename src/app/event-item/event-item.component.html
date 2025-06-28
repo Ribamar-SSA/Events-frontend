@@ -28,9 +28,24 @@
       Data: {{ appEvent.event_date | date:'longDate' }}
     </div>
 
-    <button [routerLink]="['/events', appEvent.id]"
-      class="mt-6 w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
-      Ver Detalhes
-    </button>
+
+    <div class="flex gap-2">
+
+      <button [routerLink]="['/events', appEvent.id]"
+        class="mt-6 w-full bg-blue-500 text-white  py-2 px-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        Ver
+      </button>
+
+      <button [routerLink]="['/events', appEvent.id]"
+        class="mt-6 w-full bg-orange-500 text-white py-2 px-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        Editar
+      </button>
+
+      <button [routerLink]="['/events', appEvent.id]"
+        class="mt-6 w-full bg-red-500 text-white  py-2 px-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
+        Excluir
+      </button>
+    </div>
+
 
   </div>

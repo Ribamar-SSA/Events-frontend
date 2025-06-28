@@ -8,6 +8,7 @@
 
        <ng-container *ngIf="authService.isloggedIn() | async; else notLoggedIn">
         <span>Bem-vindo, {{ (authService.getCurrentUser() | async)?.name }}</span>
+        <li><a routerLink="/events/create" class="hover:text-blue-400">Novo Evento</a></li>
          <li><a routerLink="/events" class="hover:text-blue-400">Eventos</a></li>
         <button class="hover:text-blue-400" (click)="authService.logout() ">Sair</button>
       </ng-container>
