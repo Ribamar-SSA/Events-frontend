@@ -39,6 +39,20 @@ export class EventService {
   }
 
   createEvent(formData: FormData): Observable<any> {
+    console.log(formData);
     return this.http.post(`${this.apiUrl}/store`, formData, { withCredentials: true });
+  }
+
+  getCategories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/categories`, { withCredentials: true });
+  }
+
+  destroyEvent(id:number):Observable<any>{
+    return this.http.delete<string[]>(`${this.apiUrl}/${id}`).pipe(
+      catchError(error => {
+        console.error(`Erro no EventService ao deletar evento ${id}:`, error);
+        return throwError(() => new Error(`Falha na API ao deletar evento: ${error.message || 'Erro desconhecido'}`));
+      })
+    );
   }
 }

@@ -23,6 +23,7 @@ export class AuthService {
     const token = this.getToken();
     const user = token ? this.decodeToken(token) : null;
     this.currentUserSubject = new BehaviorSubject<any | null>(user);
+    
   }
 
 

@@ -41,7 +41,7 @@
         Editar
       </button>
 
-      <button [routerLink]="['/events', appEvent.id]"
+      <button (click)="onDeleteEvent(appEvent.id)"
         class="mt-6 w-full bg-red-500 text-white  py-2 px-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400">
         Excluir
       </button>

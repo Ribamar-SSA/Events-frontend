@@ -14,6 +14,7 @@ export interface AppEvent {
   is_public: number; // ou boolean, dependendo da sua lógica
   category: string;
   image: string;
+  image_url:string; 
   // Adicione outras propriedades específicas do seu evento aqui
 }
 

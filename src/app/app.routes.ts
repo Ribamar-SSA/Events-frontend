@@ -5,7 +5,10 @@ import { EventDetailComponent } from './event-detail/event-detail.component';
 import { EventFormComponent } from './event-form/event-form.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
+import { EventItemComponent } from './event-item/event-item.component';
 
+
+//qual componente deve ser exibido quando a rota for ativada
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
@@ -16,6 +19,7 @@ export const routes: Routes = [
 
   // Rotas Protegidas (precisam de autenticação) - Adicionaremos Guards futuramente
   { path: 'events/:id/edit', component: EventFormComponent, title: 'Editar Evento' },
+  { path: 'events/detroy/:id', component: EventListComponent, title: 'Apagar Evento' },
 
 
 
