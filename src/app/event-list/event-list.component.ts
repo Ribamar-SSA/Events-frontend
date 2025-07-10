@@ -16,6 +16,9 @@ import { EventService } from '../events/event.service';
 })
 export class EventListComponent implements OnInit {
 
+  successMessage = signal<string | null>(null); // Use signal para messages
+  errorMessage = signal<string | null>(null);
+
   events = signal<AppEvent[]>([]);
   message = signal('Carregando eventos...');
   error = signal<string | null>(null);
@@ -79,6 +82,30 @@ export class EventListComponent implements OnInit {
       this.fetchEvents(this.currentPage() + 1);
     }
 
+  }
+
+  removeEventFromList(deletedEventId: number): void {
+    // Atualiza o signal 'events' usando .set() com uma nova array filtrada
+    this.events.set(this.events().filter(event => event.id !== deletedEventId));
+
+    // Define a mensagem de sucesso usando .set()
+    this.successMessage.set('Evento excluído com sucesso!');
+    this.errorMessage.set(null); // Limpa qualquer mensagem de erro ao deletar
+
+    // Lógica para recarregar a página se a lista ficar vazia
+    // Lembre-se de usar .currentPage() e .lastPage() para acessar os valores dos signals
+    if (this.events().length === 0 && this.currentPage() > 1) {
+      // Se a página atual ficou vazia e não é a primeira, vai para a anterior
+      this.fetchEvents(this.currentPage() - 1);
+    } else if (this.events().length === 0 && this.currentPage() === 1 && this.lastPage() > 1) {
+      // Se a primeira página ficou vazia, mas há mais páginas para carregar
+      this.fetchEvents(1); // Recarrega a primeira página novamente, que agora pode ter novos dados ou menos páginas
+    } else if (this.events().length > 0 && this.currentPage() === this.lastPage() && this.events().length < 5) { // Supondo 5 itens por página
+      // Isso é uma heurística. Se a página atual tem poucos itens e é a última,
+      // pode ser interessante recarregar para ver se a paginação se ajusta.
+      // Isso é mais complexo e pode depender de como sua API de paginação lida com a exclusão.
+      // Para simplificar, a lógica acima para páginas vazias já ajuda bastante.
+    }
   }
 
 

@@ -10,7 +10,7 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-screen-lg mx-auto ">
     @for (event of events(); track event.id) {
-    <app-event-item [appEvent]="event"></app-event-item>
+    <app-event-item [appEvent]="event" (eventDeleted)="removeEventFromList($event)"></app-event-item>
     }
   </div>
 
