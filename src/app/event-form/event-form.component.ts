@@ -1,140 +1,200 @@
+// src/app/event-form/event-form.component.ts
+
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'; // Adicionado OnInit
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventService } from '../events/event.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
-import { debounceTime, distinctUntilChanged, Observable, of, switchMap } from 'rxjs';
+import { AppEvent } from '../models/event.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs'; // Adicionado Observable para o user_id
 
 @Component({
-  selector: 'app-event-form',
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './event-form.component.html',
-  styleUrl: './event-form.component.scss'
+    selector: 'app-event-form',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './event-form.component.html',
+    styleUrl: './event-form.component.scss'
 })
-export class EventFormComponent {
-  eventForm!: FormGroup;
-  errorMessage: string = '';
-  successMessage: string = '';
-  selectedFile: File | null = null;
-  currentUser: any;
+export class EventFormComponent implements OnInit { // Implementado OnInit
+    eventId: number | null = null;
+    isEditMode: boolean = false;
+    imagePreview: string | ArrayBuffer | null = null;
+    eventForm!: FormGroup;
+    errorMessage: string | null = null; // Alterado para 'null' para melhor tratamento
+    successMessage: string | null = null; // Alterado para 'null' para melhor tratamento
+    selectedFile: File | null = null;
+    currentUser: any;
 
 
-  // Array para armazenar as categorias do backend
-  categories: string[] = [];
-  // Observable para sugestões de categoria (se usar input com datalist)
-  filteredCategories$: Observable<string[]> | undefined;
+    constructor(
+        private fb: FormBuilder,
+        private eventService: EventService,
+        private authService: AuthService,
+        private router: Router,
+        private route: ActivatedRoute
+    ) { }
 
-  constructor(
-    private fb: FormBuilder,
-    private eventService: EventService,
-    private authService: AuthService,
-    private router: Router
-  ) { }
+    ngOnInit(): void {
+        this.initForm();
 
-  ngOnInit(): void {
-    this.eventForm = this.fb.group({
-      title: ['', Validators.required],
-      speaker: ['', Validators.required],
-      description: ['', Validators.required],
-      date: ['', Validators.required],
-      time: ['', Validators.required],
-      location: ['', Validators.required],
-      capacity: ['', Validators.required],
-      category: ['', Validators.required],
-      is_public: ['', Validators.required]
-    });
+        this.route.paramMap.subscribe(params => {
+            const idParam = params.get('id');
+            if (idParam) {
+                this.eventId = +idParam; // Converte para número
+                this.isEditMode = true;
+                this.loadEventData(this.eventId); // Carrega os dados para preencher o formulário
+            }
+        });
 
-
-    // Carregar as categorias ao inicializar o componente
-    this.eventService.getCategories().subscribe({
-      next: (data) => {
-        this.categories = data; // Assumindo que a API retorna um array de strings
-      },
-      error: (err) => {
-        console.error('Erro ao carregar categorias:', err);
-        // Opcional: exibir uma mensagem de erro ou usar categorias padrão
-        this.errorMessage = 'Não foi possível carregar as categorias. Tente novamente.';
-      }
-    });
-
-    // Configura o autocompletar para o campo de categoria (se você decidir usar input com datalist)
-    this.filteredCategories$ = this.eventForm.controls['category'].valueChanges.pipe(
-      debounceTime(300), // Espera 300ms após a última digitação- reduz o número de operações desnecessárias
-      distinctUntilChanged(), // Só emite se o valor for diferente do anterior
-      switchMap(value => this.filterCategories(value || '')) // Filtra as categorias, se null ou undefined=>''
-    );
-  }
-
-
-
-
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
+        this.authService.getCurrentUser().subscribe(user => {
+            if (user) {
+                this.currentUser = user;
+                console.log('Usuário autenticado. ID:', user);
+            } else {
+                this.currentUser = null;
+                console.log('Usuário não autenticado.');
+            }
+        });
     }
-  }
 
-  private filterCategories(value: string): Observable<string[]> {
-    const filterValue = value.toLowerCase();
-    return of(this.categories.filter(category => category.toLowerCase().includes(filterValue)));
-  }
+    initForm(): void {
+        this.eventForm = this.fb.group({
+            title: ['', Validators.required],
+            speaker: ['', Validators.required],
+            description: ['', Validators.required],
+            date: ['', Validators.required],
+            time: ['', Validators.required],
+            location: ['', Validators.required],
+            capacity: ['', [Validators.required, Validators.min(1)]],
+            category: ['', Validators.required],
+            is_public: [false, Validators.required]
+        });
+    }
 
-  onSubmit(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    loadEventData(id: number): void {
+        this.eventService.getEventById(id).subscribe(
+            {
+                next: (event: AppEvent) => {
+                    // Assume que a sua API retorna a data e hora do evento em uma propriedade 'event_date'
+                    const eventDateTime = event.event_date ? new Date(event.event_date) : null;
 
-    if (this.eventForm.valid) {
-      const formData = new FormData();
-      formData.append('title', this.eventForm.value.title);
-      formData.append('speaker', this.eventForm.value.speaker)
-      formData.append('description', this.eventForm.value.description);
-      formData.append('date', this.eventForm.value.date);
-      formData.append('time', this.eventForm.value.time);
-      formData.append('location', this.eventForm.value.location);
-      formData.append('capacity', this.eventForm.value.capacity)
-      formData.append('category', this.eventForm.value.category)
-      formData.append('is_public', this.eventForm.get('is_public')?.value ? '1' : '0');
+                    const formattedDate = eventDateTime ? eventDateTime.toISOString().split('T')[0] : '';
+                    const formattedTime = eventDateTime ? eventDateTime.toTimeString().split(' ')[0].substring(0, 5) : '';
 
+                    this.eventForm.patchValue({
+                        title: event.title,
+                        speaker: event.speaker,
+                        description: event.description,
+                        date: formattedDate,
+                        time: formattedTime,
+                        location: event.location,
+                        capacity: event.capacity,
+                        category: event.category,
+                        is_public: event.is_public
+                    });
 
-      this.authService.getCurrentUser().subscribe(user => {
-        if (user) {
-          console.log('Usuário autenticado. ID:', user);
-          this.currentUser = user;
+                    if (event.image_url) {
+                        this.imagePreview = `${event.image_url}`;
+                    }
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.error('Erro ao carregar dados do evento:', err);
+                    this.errorMessage = `Falha ao carregar evento: ${err.message || 'Erro desconhecido'}`;
+                }
+            }
+        )
+    }
+
+    onFileSelected(event: any): void {
+        const file = event.target.files[0];
+        if (file) {
+            this.selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = e => {
+                this.imagePreview = reader.result;
+            };
+            reader.readAsDataURL(file);
+
         } else {
-          console.log('Usuário não autenticado.');
+            this.selectedFile = null;
+            this.imagePreview = null;
         }
-      });
-      formData.append('user_id', this.currentUser.user_id)
-
-
-      if (this.selectedFile) {
-        formData.append('image', this.selectedFile, this.selectedFile.name);
-      }
-
-      this.eventService.createEvent(formData).subscribe({
-        next: (response) => {
-          console.log('Evento criado com sucesso!', response);
-          this.successMessage = 'Evento criado com sucesso!';
-          this.eventForm.reset();
-          this.router.navigate(['/events']);
-        },
-        error: (error) => {
-          console.error('Erro ao criar evento:', error);
-          if (error.status === 422 && error.error && error.error.errors) {
-
-            this.errorMessage = Object.values(error.error.errors).flat().join(' ');
-          } else if (error.error && error.error.message) {
-            this.errorMessage = error.error.message;
-          } else {
-            this.errorMessage = 'Ocorreu um erro ao criar o evento. Tente novamente.';
-          }
-        }
-      });
-    } else {
-      this.errorMessage = 'Por favor, preencha todos os campos obrigatórios.';
     }
-  }
 
+
+    onSubmit(): void {
+        this.errorMessage = null;
+        this.successMessage = null;
+
+        if (this.eventForm.invalid) {
+            this.errorMessage = 'Por favor, preencha todos os campos obrigatórios e válidos.';
+            this.eventForm.markAllAsTouched();
+            return;
+        }
+
+        const formData = new FormData();
+        Object.keys(this.eventForm.value).forEach(key => {
+            if (key === 'is_public') {
+                formData.append(key, this.eventForm.get(key)?.value ? '1' : '0');
+            } else {
+                formData.append(key, this.eventForm.get(key)?.value);
+            }
+        });
+
+        if (this.currentUser && this.currentUser.user_id) {
+            formData.append('user_id', this.currentUser.user_id);
+        } else {
+            this.errorMessage = 'Erro: Usuário não autenticado. Não é possível enviar o evento.';
+            console.error('Erro: currentUser ou user_id não disponível ao tentar submeter o formulário.');
+            return;
+        }
+
+
+        if (this.selectedFile) {
+            formData.append('image', this.selectedFile, this.selectedFile.name);
+        }
+
+        if (this.isEditMode && this.eventId) {
+
+            this.eventService.updateEvent(this.eventId, formData).subscribe({
+                next: (response) => {
+                    console.log('Evento atualizado com sucesso!', response);
+                    this.successMessage = 'Evento atualizado com sucesso!';
+                    this.router.navigate(['/events', this.eventId]);
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.error('Erro ao atualizar evento:', err);
+                    if (err.status === 422 && err.error && err.error.errors) {
+                        this.errorMessage = Object.values(err.error.errors).flat().join(' ');
+                    } else if (err.error && err.error.message) {
+                        this.errorMessage = err.error.message;
+                    } else {
+                        this.errorMessage = 'Ocorreu um erro ao atualizar o evento. Tente novamente.';
+                    }
+                }
+            });
+        } else {
+            this.eventService.createEvent(formData).subscribe({
+                next: (response) => {
+                    console.log('Evento criado com sucesso!', response);
+                    this.successMessage = 'Evento criado com sucesso!';
+                    this.eventForm.reset();
+                    this.selectedFile = null;
+                    this.imagePreview = null;
+                    this.router.navigate(['/events', response.event.id]);
+                },
+                error: (err: HttpErrorResponse) => {
+                    console.error('Erro ao criar evento:', err);
+                    if (err.status === 422 && err.error && err.error.errors) {
+                        this.errorMessage = Object.values(err.error.errors).flat().join(' ');
+                    } else if (err.error && err.error.message) {
+                        this.errorMessage = err.error.message;
+                    } else {
+                        this.errorMessage = 'Ocorreu um erro ao criar o evento. Tente novamente.';
+                    }
+                }
+            });
+        }
+    }
 }
